@@ -1,0 +1,5 @@
+package.jsons
+    build == prod
+    dev is development environment
+    build is production environment
+    you don't actually run it in production mode, production mode is what you deploy to thine server
