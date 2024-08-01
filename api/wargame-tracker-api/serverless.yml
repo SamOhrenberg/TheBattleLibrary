@@ -1,0 +1,56 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: samuelohrenberg
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: wargame-tracker-api
+
+plugins:
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  stage: dev
+  region: us-east-2
+
+functions:
+  getFriends:
+    handler: functions/friends.getFriends
+    events:
+      - http:
+          path: friends
+          method: get
+          cors: true
+  sendFriendRequest:
+    handler: functions/friends.sendFriendRequest
+    events:
+      - http:
+          path: friends/request/{otherUserId}
+          method: post
+          cors: true
+
+resources:
+  Resources:
+    FriendsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: FriendsTable
+        AttributeDefinitions:
+          - AttributeName: userIds
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userIds
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+  Outputs:
+    GetFriendsApiEndpoint:
+      Description: "URL of the getFriends endpoint"
+      Value: 
+        Fn::Sub: "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/${sls:stage}/friends"
+
+    SendFriendRequestApiEndpoint:
+      Description: "URL of the sendFriendRequest endpoint"
+      Value: 
+        Fn::Sub: "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/${sls:stage}/friends/request"

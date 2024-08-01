@@ -16,3 +16,11 @@ run `npm run dev`
 
 Make sure AWS Toolkit is installed in VS Code
 
+Make sure .NET 8 SDK is installed
+
+Make sure C# Dev Kit extension is installed
+
+on mac run `brew tap aws/tap` and `brew install aws-sam-cli` to install the CLI tools used to deploy the .net lambda project
+
+dotnet tool install -g Amazon.Lambda.Tools
+
