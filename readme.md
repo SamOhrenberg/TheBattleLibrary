@@ -1,26 +1,16 @@
 # Wargame Tracker
 
+## Dev Environment Set up
+
+Install Nodejs (curently using version 20.16.0): https://nodejs.org/dist/v20.16.0/node-v20.16.0-x64.msi
+
+Install Serverless as a global framework: run `npm i serverless -g` in a terminal
+
+Install AWSCLIv2: https://aws.amazon.com/cli/
+
 ## Projects
 
-### Vue UI
+### Vue Web App (ui)
 
-Install nodejs
-
-Set current directory to /ui
-
-run `npm install`
-
-run `npm run dev`
-
-### Lambda / API Gateway
-
-Make sure AWS Toolkit is installed in VS Code
-
-Make sure .NET 8 SDK is installed
-
-Make sure C# Dev Kit extension is installed
-
-on mac run `brew tap aws/tap` and `brew install aws-sam-cli` to install the CLI tools used to deploy the .net lambda project
-
-dotnet tool install -g Amazon.Lambda.Tools
+### AWS Backend (api/wargame-tracker-api)
 
