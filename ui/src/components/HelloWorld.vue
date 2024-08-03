@@ -1,10 +1,9 @@
 <template>
+  <h1>Welcome to Battle Library</h1>
   <div>
-    <h1>Test</h1>
-    <button @click="login">Log in</button>
+    <button @click="doSomethingWithToken">Do omsething</button> 
   </div>
-  <div>
-    <button @click="doSomethingWithToken">Do omsething</button> </div>
+
 </template>
 <script>
 import { useAuth0 } from '@auth0/auth0-vue';
