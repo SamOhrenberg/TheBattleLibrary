@@ -2,7 +2,7 @@
 
   <v-app>
     <v-main>
-      <!-- Render this component only on tablet screens -->
+      <!-- Render this component only on tablet screens and up -->
       <div v-if="smAndUp">
         <DesktopNav 
           :is-logged-in="isLoggedIn" 
