@@ -36,7 +36,7 @@
             <span>Profile</span>
         </v-btn>
         
-        <v-btn class="fill-height" v-if="!isLoggedIn" @click="login">
+        <v-btn class="fill-height" v-if="!isLoggedIn" @click="goToLogin">
             <v-icon>mdi-login</v-icon>
             <span>Login</span>
         </v-btn>
@@ -45,21 +45,34 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
-import { defineProps } from 'vue';
-
-// Define props for the component
-const props = defineProps({
-  isLoggedIn: Boolean,
-  login: Function,
-  goToSearch: Function,
-  goToProfile: Function,
-  goToCombatReport: Function
-});
+import { useUserStore } from '@/stores/user';
 
 
 const router = useRouter();
+const { isLoggedIn } = useUserStore();
 
 const goToHome = () => {
   router.push('/');
 };
+
+const goToProfile = () => {
+  router.push('/profile');
+};
+
+const goToCombatReport = () => {
+  router.push('/combat-report');
+};
+
+const goToLogin = () => {
+  router.push('/login');
+}
+
+const goToRegister = () => {
+  router.push('/register');
+}
+
+const goToLogout = () => {
+  router.push('/logout');
+}
+
 </script>
