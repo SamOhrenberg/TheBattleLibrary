@@ -27,6 +27,19 @@ app.use(
       }
     })
   );
+
+  app.config.errorHandler = (err, vm, info) => {
+    // `err`: The error object
+    // `vm`: The Vue component instance where the error was caught
+    // `info`: A Vue-specific error information string (optional)
+  
+    // Log the error details for debugging
+    console.error('Global Error Handler:', err, vm, info);
+  
+    // Display an alert with the error message (for demonstration purposes)
+    alert(`An error occurred: ${err.message}`);
+  };
+  
   
 
 app.mount('#app')
