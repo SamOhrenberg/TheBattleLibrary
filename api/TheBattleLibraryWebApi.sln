@@ -5,6 +5,8 @@ VisualStudioVersion = 17.9.34714.143
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheBattleLibrary.API", "TheBattleLibrary.API\TheBattleLibrary.API.csproj", "{40B022DB-1B47-471B-9F1B-5E795517B774}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheBattleLibrary.API.Tests", "TheBattleLibrary.API.Tests\TheBattleLibrary.API.Tests.csproj", "{E7F49797-CB7B-48AF-B2DB-B03123672CB8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{40B022DB-1B47-471B-9F1B-5E795517B774}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40B022DB-1B47-471B-9F1B-5E795517B774}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40B022DB-1B47-471B-9F1B-5E795517B774}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7F49797-CB7B-48AF-B2DB-B03123672CB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7F49797-CB7B-48AF-B2DB-B03123672CB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7F49797-CB7B-48AF-B2DB-B03123672CB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7F49797-CB7B-48AF-B2DB-B03123672CB8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
