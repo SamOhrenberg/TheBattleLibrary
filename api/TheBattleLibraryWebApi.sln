@@ -19,13 +19,25 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheBattleLibrary.Services",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheBattleLibrary.Services.Test", "Services\TheBattleLibrary.Services.Test\TheBattleLibrary.Services.Test.csproj", "{5FABE3D7-5390-4C37-88A1-21F5464B6612}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheBattleLibrary.Data", "Data\TheBattleLibrary.Data\TheBattleLibrary.Data.csproj", "{E7E1572E-E4D2-4BCA-BDFE-2C338A4677B3}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheBattleLibrary.Data.Tests", "Data\TheBattleLibrary.Data.Tests\TheBattleLibrary.Data.Tests.csproj", "{70D589AE-1119-4166-A7CC-9DB73F57D9CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheBattleLibrary.Common", "Common\TheBattleLibrary.Common\TheBattleLibrary.Common.csproj", "{81B745FB-D860-42FF-9DB4-3ACE3D1E2EB4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheBattleLibrary.Common", "Common\TheBattleLibrary.Common\TheBattleLibrary.Common.csproj", "{81B745FB-D860-42FF-9DB4-3ACE3D1E2EB4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheBattleLibrary.Common.Tests", "Common\TheBattleLibrary.Common.Tests\TheBattleLibrary.Common.Tests.csproj", "{E581327C-E1F6-42F7-946D-2A83878D38E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheBattleLibrary.Common.Tests", "Common\TheBattleLibrary.Common.Tests\TheBattleLibrary.Common.Tests.csproj", "{E581327C-E1F6-42F7-946D-2A83878D38E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheBattleLibrary.Data.Entities", "Data\TheBattleLibrary.Data.Entities\TheBattleLibrary.Data.Entities.csproj", "{964ADFB5-BD83-4487-BD34-C40A9E584737}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheBattleLibrary.Data.Sqlite", "Data\TheBattleLibrary.Data.Sqlite\TheBattleLibrary.Data.Sqlite.csproj", "{8C5B88F8-C2EB-47B5-B1CD-382790F3EDA3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{964ADFB5-BD83-4487-BD34-C40A9E584737} = {964ADFB5-BD83-4487-BD34-C40A9E584737}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Providers", "Providers", "{053F9CD2-B630-4FE5-8292-81EE3CDEA3AE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheBattleLibrary.Data", "Data\TheBattleLibrary.Data\TheBattleLibrary.Data.csproj", "{4ED19CCF-32A0-4864-A820-A2BEC997F1C9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8C5B88F8-C2EB-47B5-B1CD-382790F3EDA3} = {8C5B88F8-C2EB-47B5-B1CD-382790F3EDA3}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,10 +61,6 @@ Global
 		{5FABE3D7-5390-4C37-88A1-21F5464B6612}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5FABE3D7-5390-4C37-88A1-21F5464B6612}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5FABE3D7-5390-4C37-88A1-21F5464B6612}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E7E1572E-E4D2-4BCA-BDFE-2C338A4677B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E7E1572E-E4D2-4BCA-BDFE-2C338A4677B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E7E1572E-E4D2-4BCA-BDFE-2C338A4677B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E7E1572E-E4D2-4BCA-BDFE-2C338A4677B3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{70D589AE-1119-4166-A7CC-9DB73F57D9CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{70D589AE-1119-4166-A7CC-9DB73F57D9CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{70D589AE-1119-4166-A7CC-9DB73F57D9CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -65,6 +73,18 @@ Global
 		{E581327C-E1F6-42F7-946D-2A83878D38E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E581327C-E1F6-42F7-946D-2A83878D38E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E581327C-E1F6-42F7-946D-2A83878D38E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{964ADFB5-BD83-4487-BD34-C40A9E584737}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{964ADFB5-BD83-4487-BD34-C40A9E584737}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{964ADFB5-BD83-4487-BD34-C40A9E584737}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{964ADFB5-BD83-4487-BD34-C40A9E584737}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C5B88F8-C2EB-47B5-B1CD-382790F3EDA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C5B88F8-C2EB-47B5-B1CD-382790F3EDA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C5B88F8-C2EB-47B5-B1CD-382790F3EDA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C5B88F8-C2EB-47B5-B1CD-382790F3EDA3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4ED19CCF-32A0-4864-A820-A2BEC997F1C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4ED19CCF-32A0-4864-A820-A2BEC997F1C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4ED19CCF-32A0-4864-A820-A2BEC997F1C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4ED19CCF-32A0-4864-A820-A2BEC997F1C9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -74,10 +94,13 @@ Global
 		{E7F49797-CB7B-48AF-B2DB-B03123672CB8} = {132D0CE7-D4D2-4CE1-A4EA-F92EF4996E24}
 		{9AF3CDA9-8E03-4BAB-822E-211DE46FB887} = {3CE6F471-55B4-460D-A596-6A91DBCF6F32}
 		{5FABE3D7-5390-4C37-88A1-21F5464B6612} = {3CE6F471-55B4-460D-A596-6A91DBCF6F32}
-		{E7E1572E-E4D2-4BCA-BDFE-2C338A4677B3} = {D252FC64-9E75-4F20-8729-DC082BAB4630}
 		{70D589AE-1119-4166-A7CC-9DB73F57D9CB} = {D252FC64-9E75-4F20-8729-DC082BAB4630}
 		{81B745FB-D860-42FF-9DB4-3ACE3D1E2EB4} = {8CE126CD-8224-4637-9E43-74141F061FF1}
 		{E581327C-E1F6-42F7-946D-2A83878D38E4} = {8CE126CD-8224-4637-9E43-74141F061FF1}
+		{964ADFB5-BD83-4487-BD34-C40A9E584737} = {D252FC64-9E75-4F20-8729-DC082BAB4630}
+		{8C5B88F8-C2EB-47B5-B1CD-382790F3EDA3} = {053F9CD2-B630-4FE5-8292-81EE3CDEA3AE}
+		{053F9CD2-B630-4FE5-8292-81EE3CDEA3AE} = {D252FC64-9E75-4F20-8729-DC082BAB4630}
+		{4ED19CCF-32A0-4864-A820-A2BEC997F1C9} = {D252FC64-9E75-4F20-8729-DC082BAB4630}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {604A9C3F-C3DF-45A9-9418-F0A204E97A97}
