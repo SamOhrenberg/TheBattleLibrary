@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - test
+      - main
     types: 
       - closed  # Only triggers when a PR is closed/merged
 
