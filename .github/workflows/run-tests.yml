@@ -6,7 +6,7 @@ on:
   pull_request:
     branches:
       - main
-    types: [created, edited]
+    types: [opened, edited]
 
 jobs:
   run-tests:
