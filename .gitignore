@@ -18,5 +18,9 @@ pnpm-debug.log*
 *.suo
 *.ntvs*
 *.njsproj
-*.sln
 *.sw?
+.vs
+obj
+bin
+
+appsettings.json
