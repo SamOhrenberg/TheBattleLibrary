@@ -1,0 +1,31 @@
+name: Run Tests on PR Merge
+
+on:
+  pull_request:
+    branches:
+      - test
+    types: 
+      - closed  # Only triggers when a PR is closed/merged
+
+jobs:
+  run-tests:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.x' # Set the .NET version you're using
+
+    - name: Install dependencies
+      run: dotnet restore ./api
+
+    - name: Build project
+      run: dotnet build ./api --no-restore
+
+    - name: Run tests
+      run: dotnet test ./api --no-build --verbosity normal
