@@ -1,4 +1,6 @@
 
+using Microsoft.Extensions.Configuration;
+using Serilog;
 using TheBattleLibrary.API.Middlewares;
 
 namespace TheBattleLibrary.API
@@ -15,6 +17,13 @@ namespace TheBattleLibrary.API
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            // setting this up to use the DI-enabled logger instead of the Serilog static Log. class
+            // to enforce the di pattern
+            var serilogger = new LoggerConfiguration()
+                .ReadFrom.Configuration(builder.Configuration)
+                .CreateLogger();
+            builder.Logging.AddSerilog(serilogger);
 
             var app = builder.Build();
 
