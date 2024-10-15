@@ -6,7 +6,7 @@ on:
       - test
       - main
     types: 
-      - closed  # Only triggers when a PR is closed/merged
+      - created
 
 jobs:
   run-tests:
@@ -14,6 +14,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Check branch
+      if: github.base_ref == 'main' && github.head_ref != 'test'
+      run: |
+        echo "ERROR: You can only merge to main from test."
+        exit 1
+        
     - name: Checkout code
       uses: actions/checkout@v3
 
