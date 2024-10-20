@@ -1,7 +1,9 @@
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 using TheBattleLibrary.API.Middlewares;
+using TheBattleLibrary.Data;
 
 namespace TheBattleLibrary.API
 {
@@ -28,6 +30,13 @@ namespace TheBattleLibrary.API
             builder.Logging.AddSerilog(serilogger);
 
             var app = builder.Build();
+
+            // Apply migrations on startup
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<IApplicationDbContext>();
+                dbContext.Database.Migrate();
+            }
 
             app.UseMiddleware<ExceptionHandlingMiddleware>();
 
