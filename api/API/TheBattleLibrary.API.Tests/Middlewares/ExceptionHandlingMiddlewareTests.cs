@@ -43,9 +43,9 @@ namespace TheBattleLibrary.API.Tests.Middlewares
                 x => x.Log(
                     It.Is<LogLevel>(logLevel => logLevel == LogLevel.Error),
                     It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Unhandled exception occurred")),
+                    It.Is<It.IsAnyType>((v, t) => v!.ToString()!.Contains("Unhandled exception occurred")),
                     It.IsAny<Exception>(),
-                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
         }
     }

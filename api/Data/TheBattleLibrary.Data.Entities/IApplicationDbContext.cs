@@ -8,5 +8,7 @@ namespace TheBattleLibrary.Data
     {
         DbSet<UserAccount> Users { get; set; }
         DatabaseFacade Database { get; }
+
+        int SaveChanges();
     }
 }

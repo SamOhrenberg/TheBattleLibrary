@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Data\TheBattleLibrary.Data\TheBattleLibrary.Data.csproj" />
+    <ProjectReference Include="..\..\Services\TheBattleLibrary.Services\TheBattleLibrary.Services.csproj" />
   </ItemGroup>
 
 </Project>

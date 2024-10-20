@@ -13,7 +13,7 @@ public class Startup
 {
     public static IServiceCollection ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
-        var databaseType = configuration.GetValue<string>("DatabaseType");
+        var databaseType = configuration.GetValue<string>("DatabaseType") ?? string.Empty;
         var connectionString = configuration.GetConnectionString(databaseType);
 
         switch (databaseType.ToLower())

@@ -6,4 +6,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="8.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Data\TheBattleLibrary.Data.Entities\TheBattleLibrary.Data.Entities.csproj" />
+    <ProjectReference Include="..\..\Data\TheBattleLibrary.Data\TheBattleLibrary.Data.csproj" />
+  </ItemGroup>
+
 </Project>
