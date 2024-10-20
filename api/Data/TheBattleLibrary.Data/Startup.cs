@@ -43,7 +43,7 @@ public class Startup
                 });
                 break;
             default:
-                throw new Exception("Unsupported database type");
+                throw new ArgumentException("Unsupported database type", "DatabaseType");
         }
 
         return services;
