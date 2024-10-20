@@ -13,6 +13,8 @@ namespace TheBattleLibrary.API
 
             // Add services to the container.
 
+            Data.Startup.ConfigureServices(builder.Services, builder.Configuration);
+
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
