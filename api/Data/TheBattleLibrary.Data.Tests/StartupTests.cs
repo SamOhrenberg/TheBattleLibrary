@@ -15,7 +15,7 @@ public class StartupTests
     {
         // Arrange
         var services = new ServiceCollection();
-        var inMemorySettings = new Dictionary<string, string> {
+        var inMemorySettings = new Dictionary<string, string?> {
             {"DatabaseType", "sqlite"},
             {"ConnectionStrings:sqlite", "DataSource=mydb.db"},
         };
@@ -39,7 +39,7 @@ public class StartupTests
     {
         // Arrange
         var services = new ServiceCollection();
-        var inMemorySettings = new Dictionary<string, string> {
+        var inMemorySettings = new Dictionary<string, string?> {
             {"DatabaseType", "oracle"},
             {"ConnectionStrings:oracle", "DataSource=mydb.db"},
         };
@@ -57,7 +57,7 @@ public class StartupTests
     {
         // Arrange
         var services = new ServiceCollection();
-        var inMemorySettings = new Dictionary<string, string> {
+        var inMemorySettings = new Dictionary<string, string?> {
             {"DatabaseType", ""},
         };
 
