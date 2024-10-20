@@ -1,7 +1,9 @@
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 using TheBattleLibrary.API.Middlewares;
+using TheBattleLibrary.Data;
 
 namespace TheBattleLibrary.API
 {
@@ -12,6 +14,8 @@ namespace TheBattleLibrary.API
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+
+            Data.Startup.ConfigureServices(builder.Services, builder.Configuration);
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -26,6 +30,13 @@ namespace TheBattleLibrary.API
             builder.Logging.AddSerilog(serilogger);
 
             var app = builder.Build();
+
+            // Apply migrations on startup
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<IApplicationDbContext>();
+                dbContext.Database.Migrate();
+            }
 
             app.UseMiddleware<ExceptionHandlingMiddleware>();
 
