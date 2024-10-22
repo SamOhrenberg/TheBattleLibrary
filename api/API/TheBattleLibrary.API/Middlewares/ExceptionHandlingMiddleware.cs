@@ -36,7 +36,10 @@ public class ExceptionHandlingMiddleware
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-        var errorResponse = new Error(exception.Message);
+        var errorResponse = new Error
+        {
+            Message = exception.Message
+        };
 
         // Serialize the response and write it to the HTTP response stream
         return context.Response.WriteAsJsonAsync(errorResponse);

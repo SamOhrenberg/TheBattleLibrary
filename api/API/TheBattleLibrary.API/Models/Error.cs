@@ -3,10 +3,6 @@
 public class Error
 {
 
-    public string Message { get; private set; }
+    public string Message { get; init; }
 
-    public Error(string message)
-    {
-        Message = message;
-    }
 }

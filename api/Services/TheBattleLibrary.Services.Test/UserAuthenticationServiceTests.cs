@@ -28,33 +28,33 @@ namespace TheBattleLibrary.Services.Test
         }
 
         [Fact]
-        public void RegisterUser_ShouldThrowInvalidPasswordException_WithShortPassword()
+        public async void RegisterUser_ShouldThrowInvalidPasswordException_WithShortPassword()
         {
             // Arrange
             var username = "testUser-" + Guid.NewGuid().ToString();
             var password = "test";
 
             // act and assert
-            var error = Assert.Throws<InvalidPasswordException>(() => 
+            var error = await Assert.ThrowsAsync<InvalidPasswordException>(async () => 
             {
-                _authService.RegisterUser(username, password);
+                await _authService.RegisterUserAsync(username, password);
             });
             Assert.Single(error.Errors);
         }
 
         [Fact]
-        public void RegisterUser_ShouldReturnUserAccount_WithHashedPassword()
+        public async void RegisterUser_ShouldReturnUserAccount_WithHashedPassword()
         {
             // Arrange
             var username = "testUser-" + Guid.NewGuid().ToString();
             var password = "testPassword";
 
             // Act
-            var result = _authService.RegisterUser(username, password);
+            var result = await _authService.RegisterUserAsync(username, password);
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(username, result.Username);
+            Assert.Equal(username, result.Username, ignoreCase: true);
             Assert.NotNull(result.PasswordHash);
 
             // Verify that the password hash is valid
@@ -63,7 +63,7 @@ namespace TheBattleLibrary.Services.Test
         }
 
         [Fact]
-        public void RegisterUser_ShouldThrowUsernameTakenException_WhenUserAlreadyExists()
+        public async void RegisterUser_ShouldThrowUsernameTakenException_WhenUserAlreadyExists()
         {
             // Arrange
             var username = "existingUser";
@@ -71,8 +71,8 @@ namespace TheBattleLibrary.Services.Test
             var existingUser = new UserAccount(username, "existingPasswordHash");
 
             // Act & Assert
-            _authService.RegisterUser(username, password);
-            Assert.Throws<UsernameTakenException>(() => _authService.RegisterUser(username, password));
+            await _authService.RegisterUserAsync(username, password);
+            await Assert.ThrowsAsync<UsernameTakenException>(async () => await _authService.RegisterUserAsync(username, password));
         }
 
         [Fact]
