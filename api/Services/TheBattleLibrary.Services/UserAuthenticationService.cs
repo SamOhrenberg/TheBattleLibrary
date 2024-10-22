@@ -2,11 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 using TheBattleLibrary.Data;
 using TheBattleLibrary.Data.Entities;
+using TheBattleLibrary.Services.Abstractions;
 using TheBattleLibrary.Services.Errors;
 
 namespace TheBattleLibrary.Services;
 
-public class UserAuthenticationService
+public class UserAuthenticationService : IUserAuthenticationService
 {
     private readonly PasswordHasher<UserAccount> _passwordHasher;
     private readonly IApplicationDbContext _dbContext;
@@ -17,7 +18,7 @@ public class UserAuthenticationService
         _dbContext = dbContext;
     }
 
-    public  async Task<UserAccount> RegisterUserAsync(string username, string password)
+    public async Task<UserAccount> RegisterUserAsync(string username, string password)
     {
         username = username.ToLower();
         var userAccount = await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == username);

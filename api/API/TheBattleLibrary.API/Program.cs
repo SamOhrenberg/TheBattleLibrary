@@ -5,6 +5,7 @@ using Serilog;
 using TheBattleLibrary.API.Middlewares;
 using TheBattleLibrary.Data;
 using TheBattleLibrary.Services;
+using TheBattleLibrary.Services.Abstractions;
 
 namespace TheBattleLibrary.API
 {
@@ -22,7 +23,7 @@ namespace TheBattleLibrary.API
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            builder.Services.AddScoped<UserAuthenticationService>();
+            builder.Services.AddScoped<IUserAuthenticationService, UserAuthenticationService>();
 
             // setting this up to use the DI-enabled logger instead of the Serilog static Log. class
             // to enforce the di pattern

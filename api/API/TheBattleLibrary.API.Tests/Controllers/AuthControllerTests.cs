@@ -9,18 +9,20 @@ using TheBattleLibrary.API.Controllers;
 using TheBattleLibrary.API.Models.Auth;
 using TheBattleLibrary.Data.Entities;
 using TheBattleLibrary.Services.Errors;
+using TheBattleLibrary.Services.Abstractions;
+using TheBattleLibrary.API.Models;
 
 namespace TheBattleLibrary.API.Tests.Controllers;
 
 public class AuthControllerTests
 {
-    private readonly Mock<UserAuthenticationService> _mockAuthService;
+    private readonly Mock<IUserAuthenticationService> _mockAuthService;
     private readonly Mock<ILogger<AuthController>> _mockLogger;
     private readonly AuthController _authController;
 
     public AuthControllerTests()
     {
-        _mockAuthService = new Mock<UserAuthenticationService>(null, null);
+        _mockAuthService = new Mock<IUserAuthenticationService>();
         _mockLogger = new Mock<ILogger<AuthController>>();
         _authController = new AuthController(_mockAuthService.Object, _mockLogger.Object);
     }
@@ -53,7 +55,7 @@ public class AuthControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        var value = Assert.IsType<dynamic>(badRequestResult.Value);
+        var value = Assert.IsType<ValidationError>(badRequestResult.Value);
         Assert.Equal("An invalid password was presented", value.Message);
         Assert.Contains("Password too weak", value.Errors);
     }
@@ -71,7 +73,7 @@ public class AuthControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        var value = Assert.IsType<dynamic>(badRequestResult.Value);
+        var value = Assert.IsType<Error>(badRequestResult.Value);
         Assert.Equal($"An account with username '{model.Username}' already exists. Please select a new username.", value.Message);
     }
 }

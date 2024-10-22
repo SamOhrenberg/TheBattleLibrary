@@ -54,7 +54,7 @@ namespace TheBattleLibrary.Services.Test
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(username, result.Username);
+            Assert.Equal(username, result.Username, ignoreCase: true);
             Assert.NotNull(result.PasswordHash);
 
             // Verify that the password hash is valid

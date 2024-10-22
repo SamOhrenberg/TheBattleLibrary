@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TheBattleLibrary.API.Models;
 using TheBattleLibrary.API.Models.Auth;
 using TheBattleLibrary.Services;
+using TheBattleLibrary.Services.Abstractions;
 using TheBattleLibrary.Services.Errors;
 
 namespace TheBattleLibrary.API.Controllers;
@@ -10,10 +12,10 @@ namespace TheBattleLibrary.API.Controllers;
 [Route("[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly UserAuthenticationService _userAuthenticationService;
+    private readonly IUserAuthenticationService _userAuthenticationService;
     private readonly ILogger<AuthController> _logger;
 
-    public AuthController(UserAuthenticationService userAuthenticationService, ILogger<AuthController> logger)
+    public AuthController(IUserAuthenticationService userAuthenticationService, ILogger<AuthController> logger)
     {
         _userAuthenticationService = userAuthenticationService;
         _logger = logger;
@@ -28,7 +30,7 @@ public class AuthController : ControllerBase
         }
         catch (InvalidPasswordException ex)
         {
-            return BadRequest(new
+            return BadRequest(new ValidationError
             {
                 Message = "An invalid password was presented",
                 Errors = ex.Errors
@@ -36,7 +38,7 @@ public class AuthController : ControllerBase
         }
         catch (UsernameTakenException)
         {
-            return BadRequest(new
+            return BadRequest(new Error
             {
                 Message = $"An account with username '{model.Username}' already exists. Please select a new username."
             });
