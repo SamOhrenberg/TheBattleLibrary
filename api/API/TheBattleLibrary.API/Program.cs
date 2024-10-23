@@ -1,11 +1,15 @@
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using System;
 using TheBattleLibrary.API.Middlewares;
 using TheBattleLibrary.Data;
 using TheBattleLibrary.Services;
 using TheBattleLibrary.Services.Abstractions;
+using TheBattleLibrary.Services.Security;
 
 namespace TheBattleLibrary.API
 {
@@ -14,6 +18,15 @@ namespace TheBattleLibrary.API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            
+
+            // setting this up to use the DI-enabled logger instead of the Serilog static Log. class
+            // to enforce the di pattern
+            var serilogger = new LoggerConfiguration()
+                .ReadFrom.Configuration(builder.Configuration)
+                .CreateLogger();
+            builder.Logging.AddSerilog(serilogger);
+
 
             builder.Services.AddCors(options =>
             {
@@ -33,13 +46,36 @@ namespace TheBattleLibrary.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddScoped<IUserAuthenticationService, UserAuthenticationService>();
+            builder.Services.AddSingleton(serviceProvider =>
+            {
+                return new TokenGenerator(serviceProvider.GetRequiredService<ILogger<TokenGenerator>>(), serviceProvider.GetRequiredService<IConfiguration>());
+            });
+            builder.Services.AddAuthorization();
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer((x) =>
+                {
+                    try
+                    {
+                        var config = JwtConfiguration.GetConfiguration(builder.Configuration);
 
-            // setting this up to use the DI-enabled logger instead of the Serilog static Log. class
-            // to enforce the di pattern
-            var serilogger = new LoggerConfiguration()
-                .ReadFrom.Configuration(builder.Configuration)
-                .CreateLogger();
-            builder.Logging.AddSerilog(serilogger);
+                        x.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                        {
+                            IssuerSigningKey = new SymmetricSecurityKey(config.Key),
+                            ValidIssuer = config.Issuer,
+                            ValidAudience = config.Audience,
+                            ValidateAudience = true,
+                            ValidateIssuer = true,
+                            ValidateLifetime = true,
+                            ValidateIssuerSigningKey = true
+                        };
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Fatal(ex, ex.Message);
+                        throw;
+                    }
+                });
 
             var app = builder.Build();
 

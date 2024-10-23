@@ -5,6 +5,10 @@ using TheBattleLibrary.Services;
 using TheBattleLibrary.Data;
 using TheBattleLibrary.Services.Errors;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using TheBattleLibrary.Services.Abstractions;
+using TheBattleLibrary.Services.Security;
+using Microsoft.Extensions.Configuration;
 
 namespace TheBattleLibrary.Services.Test
 {
@@ -18,13 +22,31 @@ namespace TheBattleLibrary.Services.Test
         {
             // Initialize the PasswordHasher
             _passwordHasher = new PasswordHasher<UserAccount>();
+            var loggerMock = new Mock<ILogger<UserAuthenticationService>>();
+
             // Set up the in-memory database
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
                 .UseInMemoryDatabase(databaseName: "TestDatabase")
                 .Options;
             _dbContext = new ApplicationDbContext(options);
             
-            _authService = new UserAuthenticationService(_dbContext);
+            // set up the in memory configuration
+            var inMemorySettings = new Dictionary<string, string?> {
+                {"Security:Key", "Test123467890qwertyuioop[]asdfghjkl;'zxcvbnm,./"},
+                {"Security:Issuer", "https://tests"},
+                {"Security:Audience", "https://tests"},
+                //...populate as needed for the test
+            };
+
+            IConfiguration configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(inMemorySettings)
+                .Build();
+
+            var tokenGeneratorMock = new Mock<TokenGenerator>(new Mock<ILogger<TokenGenerator>>().Object, configuration);
+
+
+
+            _authService = new UserAuthenticationService(_dbContext, loggerMock.Object, tokenGeneratorMock.Object);
         }
 
         [Fact]
@@ -75,32 +97,59 @@ namespace TheBattleLibrary.Services.Test
             await Assert.ThrowsAsync<UsernameTakenException>(async () => await _authService.RegisterUserAsync(username, password));
         }
 
+
         [Fact]
-        public void ValidateUser_ShouldReturnTrue_WhenPasswordIsCorrect()
+        public async Task AttemptLoginAsync_InvalidPassword_ThrowsFailedLoginException()
         {
             // Arrange
-            var password = "testPassword";
-            var hashedPassword = _passwordHasher.HashPassword(null!, password);
+            var username = "testuser";
+            var invalidPassword = "123"; // invalid according to ValidatePasswordRequirements
 
-            // Act
-            var result = _authService.ValidateUser(hashedPassword, password);
-
-            // Assert
-            Assert.True(result);
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<FailedLoginException>(() => _authService.AttemptLoginAsync(username, invalidPassword));
+            Assert.Equal(FailedLoginException.IncorrectUsernameOrPassword, exception);
         }
 
         [Fact]
-        public void ValidateUser_ShouldReturnFalse_WhenPasswordIsIncorrect()
+        public async Task AttemptLoginAsync_UnregisteredUser_ThrowsFailedLoginException()
         {
             // Arrange
-            var hashedPassword = _passwordHasher.HashPassword(null!, "testPassword");
-            var incorrectPassword = "wrongPassword";
+            var username = "nonexistentuser";
+            var password = "ValidPassword123!";
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<FailedLoginException>(() => _authService.AttemptLoginAsync(username, password));
+            Assert.Equal(FailedLoginException.IncorrectUsernameOrPassword, exception);
+        }
+
+        [Fact]
+        public async Task AttemptLoginAsync_IncorrectPassword_ThrowsFailedLoginException()
+        {
+            // Arrange
+            var username = "AttemptLoginAsync_IncorrectPassword_ThrowsFailedLoginException";
+            var password = "WrongPassword123!";
+
+            await _authService.RegisterUserAsync(username, password);
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<FailedLoginException>(() => _authService.AttemptLoginAsync(username, "NotTheRightPassword@1234"));
+            Assert.Equal(FailedLoginException.IncorrectUsernameOrPassword, exception);
+        }
+
+        [Fact]
+        public async Task AttemptLoginAsync_ValidCredentials_ReturnsToken()
+        {
+            // Arrange
+            var username = "AttemptLoginAsync_ValidCredentials_ReturnsToken";
+            var password = "ValidPassword123!";
+
+            await _authService.RegisterUserAsync(username, password);
 
             // Act
-            var result = _authService.ValidateUser(hashedPassword, incorrectPassword);
+            var result = await _authService.AttemptLoginAsync(username, password);
 
             // Assert
-            Assert.False(result);
+            Assert.True(!string.IsNullOrEmpty(result));
         }
     }
 }

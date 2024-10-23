@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using TheBattleLibrary.Data;
 using TheBattleLibrary.Data.Entities;
 using TheBattleLibrary.Services.Abstractions;
 using TheBattleLibrary.Services.Errors;
+using TheBattleLibrary.Services.Security;
 
 namespace TheBattleLibrary.Services;
 
@@ -11,11 +13,15 @@ public class UserAuthenticationService : IUserAuthenticationService
 {
     private readonly PasswordHasher<UserAccount> _passwordHasher;
     private readonly IApplicationDbContext _dbContext;
+    private readonly ILogger<UserAuthenticationService> _logger;
+    private readonly TokenGenerator _tokenGenerator;
 
-    public UserAuthenticationService(IApplicationDbContext dbContext)
+    public UserAuthenticationService(IApplicationDbContext dbContext, ILogger<UserAuthenticationService> logger, TokenGenerator tokenGenerator)
     {
         _passwordHasher = new PasswordHasher<UserAccount>();
         _dbContext = dbContext;
+        _logger = logger;
+        _tokenGenerator = tokenGenerator;
     }
 
     public async Task<UserAccount> RegisterUserAsync(string username, string password)
@@ -42,6 +48,42 @@ public class UserAuthenticationService : IUserAuthenticationService
         return userAccount;
     }
 
+    public async Task<string> AttemptLoginAsync(string username, string password)
+    {
+        // check the password is valid first to save a DB call
+        try
+        {
+            ValidatePasswordRequirements(password);
+        }
+        catch (InvalidPasswordException)
+        {
+            _logger.LogDebug("Invalid password provided for {username}", username);
+            throw FailedLoginException.IncorrectUsernameOrPassword;
+        }
+
+        username = username.ToLower();
+        var userAccount = await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
+
+        // verify that the user exists
+        if (userAccount is null)
+        {
+            _logger.LogDebug("Login attempt for unregistered user {username}", username);
+            throw FailedLoginException.IncorrectUsernameOrPassword;
+        }
+
+        // validate the provided password
+        if (!ValidateUser(userAccount.PasswordHash, password))
+        {
+            _logger.LogDebug("Incorrect password provided for {username}", username);
+            throw FailedLoginException.IncorrectUsernameOrPassword;
+        }
+
+
+        // get a JWT now
+        return _tokenGenerator.GenerateToken(userAccount.Id, userAccount.Username);
+
+    }
+
     private void ValidatePasswordRequirements(string password)
     {
         InvalidPasswordException? invalidPasswordException = null;
@@ -57,7 +99,7 @@ public class UserAuthenticationService : IUserAuthenticationService
         }
     }
 
-    public bool ValidateUser(string hashedPassword, string password)
+    private bool ValidateUser(string hashedPassword, string password)
     {
         // Verify password
         var verificationResult = _passwordHasher.VerifyHashedPassword(null!, hashedPassword, password);
