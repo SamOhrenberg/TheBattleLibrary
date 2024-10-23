@@ -94,6 +94,9 @@ namespace TheBattleLibrary.API
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.UseCors();
 
             app.UseHttpsRedirection();
