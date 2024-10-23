@@ -38,6 +38,7 @@ public class ExceptionHandlingMiddleware
 
         var errorResponse = new Error
         {
+            Code = "UnknownException",
             Message = exception.Message
         };
 

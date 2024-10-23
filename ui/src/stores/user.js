@@ -1,10 +1,12 @@
 import { defineStore } from 'pinia';
-import { ref, computed } from 'vue';
+import { ref, computed, getCurrentInstance } from 'vue';
+import axios from 'axios';
 
 export const useUserStore = defineStore('user', () => {
   // State
   const user = ref(null);
   const token = ref(null);
+  const { proxy } = getCurrentInstance();
 
   // Getters
   const isLoggedIn = computed(() => token && token.value);
@@ -33,6 +35,14 @@ export const useUserStore = defineStore('user', () => {
     setUser(null);
   }
 
+  async function register(username, password) {
+    // Call the API using the dynamically loaded API URL
+    await axios.post(`${proxy.$config.API_URL}/auth/register`, {
+      username: username,
+      password: password,
+    });    
+  }
+
   async function fetchUser() {
     // Replace this with your actual user fetch logic (e.g., API call)
     const fakeApiResponse = { id: 1, name: 'John Doe', email: 'john@example.com' };
@@ -46,5 +56,6 @@ export const useUserStore = defineStore('user', () => {
     login,
     logout,
     fetchUser,
+    register
   };
 });

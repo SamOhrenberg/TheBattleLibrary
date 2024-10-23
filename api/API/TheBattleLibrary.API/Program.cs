@@ -15,8 +15,17 @@ namespace TheBattleLibrary.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                                  policy =>
+                                  {
+                                      policy.AllowAnyOrigin();
+                                      policy.AllowAnyMethod();
+                                      policy.AllowAnyHeader();
+                                  });
+            });
+            
             Data.Startup.ConfigureServices(builder.Services, builder.Configuration);
 
             builder.Services.AddControllers();
@@ -49,6 +58,7 @@ namespace TheBattleLibrary.API
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            app.UseCors();
 
             app.UseHttpsRedirection();
 

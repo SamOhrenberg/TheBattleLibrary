@@ -32,6 +32,7 @@ public class AuthController : ControllerBase
         {
             return BadRequest(new ValidationError
             {
+                Code = nameof(InvalidPasswordException),
                 Message = "An invalid password was presented",
                 Errors = ex.Errors
             });
@@ -40,6 +41,7 @@ public class AuthController : ControllerBase
         {
             return BadRequest(new Error
             {
+                Code = nameof(UsernameTakenException),
                 Message = $"An account with username '{model.Username}' already exists. Please select a new username."
             });
         }
