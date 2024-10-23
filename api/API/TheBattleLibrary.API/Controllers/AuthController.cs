@@ -48,4 +48,25 @@ public class AuthController : ControllerBase
 
         return Ok();
     }
+
+    [HttpPost("login")]
+    public async Task<ActionResult> LoginAsync([FromBody] UserLoginModel model)
+    {
+        try
+        {
+            _logger.LogTrace("Attempting login for {username}", model.Username);
+            var token = await _userAuthenticationService.AttemptLoginAsync(model.Username, model.Password);
+            _logger.LogInformation("Successful login for {username}", model.Username);
+            return Ok(token);
+        }
+        catch (FailedLoginException)
+        {
+            _logger.LogInformation("Failed login for {username}", model.Username);
+            return BadRequest(new Error
+            {
+                Code = nameof(FailedLoginException),
+                Message = "Incorrect username or password"
+            });
+        }
+    }
 }

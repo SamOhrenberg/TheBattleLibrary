@@ -2,5 +2,5 @@
 
 public class ValidationError : Error
 {
-   public IEnumerable<string> Errors { get; init; }
+   public required IEnumerable<string> Errors { get; init; }
 }
