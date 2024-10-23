@@ -29,10 +29,12 @@
   
 
 <script setup>
-import { ref, getCurrentInstance } from 'vue';
-import axios from 'axios';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
-const { proxy } = getCurrentInstance();
+import { useUserStore } from '@/stores/user';
+const userStore = useUserStore();
+const router = useRouter();
 
 // Form fields and validation
 const username = ref('');
@@ -50,20 +52,18 @@ const submitRegistration = async () => {
 
   try {
     // Call the API using the dynamically loaded API URL
-    const response = await axios.post(`${proxy.$config.API_URL}/auth/register`, {
-      username: username.value,
-      password: password.value,
-    });
+    await userStore.register(username.value, password.value);
+    router.push('/login');
 
-    console.log('Registration successful', response.data);
+    console.log('Registration successful');
   } catch (error) {
     console.error(error);
     const { data } = error.response;
 
-    if (data.ErrorCode === 'UsernameTakenException') {
-      errorMessage.value = data.Message;
-    } else if (data.ErrorCode === 'InvalidPasswordException') {
-      errorMessage.value = data.Errors.join(', ');
+    if (data.code === 'UsernameTakenException') {
+      errorMessage.value = data.message;
+    } else if (data.code === 'InvalidPasswordException') {
+      errorMessage.value = data.errors.join(', ');
     } else {
       errorMessage.value = 'An unknown error occurred.';
     }
