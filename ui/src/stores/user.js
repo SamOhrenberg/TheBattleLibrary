@@ -5,19 +5,31 @@ import axios from 'axios';
 export const useUserStore = defineStore('user', () => {
   // State
   const user = ref(null);
-  const token = ref(null);
+  const token = ref(localStorage.getItem('token') || null); // Load token from localStorage if available
   const { proxy } = getCurrentInstance();
 
   // Getters
-  const isLoggedIn = computed(() => token && token.value);
+  const isLoggedIn = computed(() => {
+    return token && token.value
+  });
 
   // Actions
   function setUser(userInfo) {
     user.value = userInfo;
+    if (userInfo) {
+      localStorage.setItem('userInfo', userInfo); // Save token to localStorage
+    } else {
+      localStorage.removeItem('userInfo'); // Remove token from localStorage on logout
+    }
   }
 
   function setToken(userToken) {
     token.value = userToken;
+    if (userToken) {
+      localStorage.setItem('token', userToken); // Save token to localStorage
+    } else {
+      localStorage.removeItem('token'); // Remove token from localStorage on logout
+    }
   }
 
   async function login(username, password) {
@@ -27,6 +39,9 @@ export const useUserStore = defineStore('user', () => {
         password: password,
       });  
       setToken(loginResponse.data);
+      setUser({
+        username: username.toUpperCase()
+      });
     } 
     catch ({response}) {
       throw response.code;

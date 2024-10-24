@@ -2,33 +2,25 @@
     <div class="login-page">
       <div class="login-card">
         <h2>Login</h2>
-        <form @submit.prevent="handleLogin">
-          <div class="form-group">
-            <label for="username">Username</label>
-            <input
-              v-model="username"
-              id="username"
-              type="text"
-              placeholder="Enter your username"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input
-              v-model="password"
-              id="password"
-              type="password"
-              placeholder="Enter your password"
-              required
-            />
-          </div>
+        <v-form @submit.prevent="handleLogin">
+          <v-text-field
+            label="Username"
+            v-model="username"
+            required
+          ></v-text-field>
+          
+          <v-text-field
+            label="Password"
+            v-model="password"
+            type="password"
+            required
+          ></v-text-field>
           <button type="submit" class="btn">Login</button>
           <v-alert v-if="errorMessage" type="error" dismissible>
               {{ errorMessage }}
           </v-alert>
 
-        </form>
+        </v-form>
         <div class="links">
           <router-link to="/register">Register</router-link>
           <router-link to="/forgot-password">Forgot your password?</router-link>
