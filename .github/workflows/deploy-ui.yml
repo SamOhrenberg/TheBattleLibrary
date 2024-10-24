@@ -1,0 +1,33 @@
+name: Deploy Vue.js App to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  # Trigger the action on push to the 'main' branch. Adjust if needed.
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20' # Ensure this matches your node version requirement
+
+    - name: Install Dependencies
+      working-directory: ./ui  # Navigate to the 'ui' folder
+      run: npm install
+
+    - name: Build Vue.js App
+      working-directory: ./ui  # Build the app in the 'ui' folder
+      run: npm run build
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./ui/dist  # Path to the output directory after build
