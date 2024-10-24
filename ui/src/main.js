@@ -18,7 +18,8 @@ const config = {
   };
   
   // Fetch the configuration at runtime
-  fetch('/config.json')
+  const configUrl = `${import.meta.env.BASE_URL}config.json`;
+  fetch('config.json')
     .then(response => response.json())
     .then((data) => {
       config.API_URL = data.API_URL;  // Set the API URL from the configuration file
