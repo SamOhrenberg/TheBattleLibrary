@@ -14,7 +14,8 @@ import mkcert from 'vite-plugin-mkcert'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: "/TheBattleLibrary/",
+  publicPath: process.env.NODE_ENV === 'production' ? '/TheBattleLibrary/' : '/',
+  base: process.env.NODE_ENV === 'production' ? '/TheBattleLibrary/' : '/',
   plugins: [
     mkcert(),
     VueRouter(),
