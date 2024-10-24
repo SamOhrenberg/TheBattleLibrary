@@ -24,6 +24,10 @@
             />
           </div>
           <button type="submit" class="btn">Login</button>
+          <v-alert v-if="errorMessage" type="error" dismissible>
+              {{ errorMessage }}
+          </v-alert>
+
         </form>
         <div class="links">
           <router-link to="/register">Register</router-link>
@@ -36,22 +40,36 @@
   <script>
   import { ref } from 'vue';
   import { useUserStore } from '@/stores/user';
-  
+  import { useRouter } from 'vue-router';
+
   export default {
     setup() {
       const username = ref('');
       const password = ref('');
       const userStore = useUserStore();
-  
+      const errorMessage = ref('');
+      const router = useRouter();
+
       const handleLogin = async () => {
-        await userStore.login(username.value, password.value);
-        // Optional: Redirect after login
-        // this.$router.push('/some-protected-route');
+        try {
+          await userStore.login(username.value, password.value);        
+          router.push('/');
+        }
+        catch (errorCode) {
+          console.log(errorCode);
+          if (errorCode === 'FailedLoginException') {
+            errorMessage.value = 'The provided username or password is incorrect. Please try again or reset your password';
+          }
+          else {
+            errorMessage.value = 'There was an unexpected error logging in. Please contact support.';
+          }
+        }
       };
   
       return {
         username,
         password,
+        errorMessage,
         handleLogin,
       };
     },

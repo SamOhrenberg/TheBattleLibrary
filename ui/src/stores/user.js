@@ -21,13 +21,16 @@ export const useUserStore = defineStore('user', () => {
   }
 
   async function login(username, password) {
-    // Replace this with your actual login logic (e.g., API call)
-    const fakeApiResponse = {
-      token: 'fake-jwt-token',
-      user: { id: 1, name: 'John Doe', email: 'john@example.com' },
-    };
-    setToken(fakeApiResponse.token);
-    setUser(fakeApiResponse.user);
+    try {
+      var loginResponse = await axios.post(`${proxy.$config.API_URL}/auth/login`, {
+        username: username,
+        password: password,
+      });  
+      setToken(loginResponse.data);
+    } 
+    catch ({response}) {
+      throw response.code;
+    }
   }
 
   function logout() {
