@@ -22,13 +22,19 @@
       <!-- Profile Button: Takes up 1/4 of the space -->
       <v-btn class="fill-height" v-if="isLoggedIn" @click="goToProfile">
         <v-icon>mdi-account</v-icon>
-        <span>Profile</span>
+        <span>{{ username }}</span>
       </v-btn>
       
+      <v-btn class="fill-height" v-if="isLoggedIn" @click="logout">
+        <v-icon>mdi-logout</v-icon>
+        <span>Logout</span>
+      </v-btn>
+        
       <v-btn class="fill-height" v-if="!isLoggedIn" @click="goToLogin">
         <v-icon>mdi-login</v-icon>
         <span>Login</span>
       </v-btn>
+
     </v-bottom-navigation>
 
 </template>
@@ -40,7 +46,10 @@ import { useUserStore } from '@/stores/user';
 
 
 const router = useRouter();
-const { isLoggedIn } = useUserStore();
+const userStore = useUserStore();
+
+const isLoggedIn = computed(() => userStore.isLoggedIn);
+const username = computed(() => userStore?.user?.username ?? "");
 
 const goToProfile = () => {
   router.push('/profile');
@@ -58,12 +67,8 @@ const goToLogin = () => {
   router.push('/login');
 }
 
-const goToRegister = () => {
-  router.push('/register');
-}
-
-const goToLogout = () => {
-  router.push('/logout');
+const logout = () => {
+  userStore.logout();
 }
 
 </script>

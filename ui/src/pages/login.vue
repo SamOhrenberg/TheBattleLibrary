@@ -2,29 +2,25 @@
     <div class="login-page">
       <div class="login-card">
         <h2>Login</h2>
-        <form @submit.prevent="handleLogin">
-          <div class="form-group">
-            <label for="username">Username</label>
-            <input
-              v-model="username"
-              id="username"
-              type="text"
-              placeholder="Enter your username"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input
-              v-model="password"
-              id="password"
-              type="password"
-              placeholder="Enter your password"
-              required
-            />
-          </div>
+        <v-form @submit.prevent="handleLogin">
+          <v-text-field
+            label="Username"
+            v-model="username"
+            required
+          ></v-text-field>
+          
+          <v-text-field
+            label="Password"
+            v-model="password"
+            type="password"
+            required
+          ></v-text-field>
           <button type="submit" class="btn">Login</button>
-        </form>
+          <v-alert v-if="errorMessage" type="error" dismissible>
+              {{ errorMessage }}
+          </v-alert>
+
+        </v-form>
         <div class="links">
           <router-link to="/register">Register</router-link>
           <router-link to="/forgot-password">Forgot your password?</router-link>
@@ -36,22 +32,36 @@
   <script>
   import { ref } from 'vue';
   import { useUserStore } from '@/stores/user';
-  
+  import { useRouter } from 'vue-router';
+
   export default {
     setup() {
       const username = ref('');
       const password = ref('');
       const userStore = useUserStore();
-  
+      const errorMessage = ref('');
+      const router = useRouter();
+
       const handleLogin = async () => {
-        await userStore.login(username.value, password.value);
-        // Optional: Redirect after login
-        // this.$router.push('/some-protected-route');
+        try {
+          await userStore.login(username.value, password.value);        
+          router.push('/');
+        }
+        catch (errorCode) {
+          console.log(errorCode);
+          if (errorCode === 'FailedLoginException') {
+            errorMessage.value = 'The provided username or password is incorrect. Please try again or reset your password';
+          }
+          else {
+            errorMessage.value = 'There was an unexpected error logging in. Please contact support.';
+          }
+        }
       };
   
       return {
         username,
         password,
+        errorMessage,
         handleLogin,
       };
     },
