@@ -4,6 +4,7 @@ using Xunit;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using TheBattleLibrary.Services;
 using TheBattleLibrary.API.Controllers;
 using TheBattleLibrary.API.Models.Auth;
@@ -118,4 +119,39 @@ public class AuthControllerTests
         Assert.Equal("Incorrect username or password", error.Message);
     }
 
+    [Fact]
+    public async Task LogoutAsyncRevokesToken()
+    {
+        var userAuthServiceMock = new Mock<IUserAuthenticationService>();
+        var loggerMock = new Mock<ILogger<AuthController>>();
+        var controller = new AuthController(userAuthServiceMock.Object, loggerMock.Object);
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext()
+        };
+        controller.ControllerContext.HttpContext.Request.Headers["Authorization"] = "validtoken";
+
+        var result = await controller.LogoutAsync();
+
+        userAuthServiceMock.Verify(s => s.LogoutAsync("validtoken"), Times.Once);
+        Assert.IsType<OkResult>(result);
+    }
+
+    [Fact]
+    public async Task LogoutAsyncReturnsBadRequestWhenNoTokenProvided()
+    {
+        var userAuthServiceMock = new Mock<IUserAuthenticationService>();
+        var loggerMock = new Mock<ILogger<AuthController>>();
+        var controller = new AuthController(userAuthServiceMock.Object, loggerMock.Object);
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext()
+        };
+
+        var result = await controller.LogoutAsync();
+
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+        var error = Assert.IsType<Error>(badRequestResult.Value);
+        Assert.Equal("NoTokenProvided", error.Code);
+    }
 }

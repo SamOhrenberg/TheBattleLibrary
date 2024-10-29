@@ -44,7 +44,9 @@ public class TokenGenerator
 
     }
 
-    public string GenerateToken(Guid id, string username)
+    public record GenerateTokenResponse(string Token, DateTime ExpiresAt);
+
+    public GenerateTokenResponse GenerateToken(Guid id, string username)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -62,10 +64,11 @@ public class TokenGenerator
             Issuer = _issuer,
             Audience = _audience,
             IssuedAt = DateTime.UtcNow,
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(_key), SecurityAlgorithms.HmacSha256Signature)
+            SigningCredentials =
+                new SigningCredentials(new SymmetricSecurityKey(_key), SecurityAlgorithms.HmacSha256Signature)
         };
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
-        return tokenHandler.WriteToken(token);
+        return new GenerateTokenResponse(tokenHandler.WriteToken(token), tokenDescriptor.Expires.Value);
     }
 }

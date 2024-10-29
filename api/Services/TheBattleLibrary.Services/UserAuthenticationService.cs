@@ -80,8 +80,27 @@ public class UserAuthenticationService : IUserAuthenticationService
 
 
         // get a JWT now
-        return _tokenGenerator.GenerateToken(userAccount.Id, userAccount.Username);
+        var tokenResponse = _tokenGenerator.GenerateToken(userAccount.Id, userAccount.Username);
+        
+        // store the token with its expiration date
+        _dbContext.UserTokens.Add(new UserToken
+        {
+            ExpiresAt = tokenResponse.ExpiresAt,
+            Token = tokenResponse.Token
+        });
+        _dbContext.SaveChanges();
+        
+        return tokenResponse.Token;
+    }
 
+    public async Task LogoutAsync(string token)
+    {
+        var tokenDb = await _dbContext.UserTokens.FirstOrDefaultAsync(a => a.Token == token);
+        if (tokenDb is not null)
+        {
+            tokenDb.IsRevoked = true;
+            _dbContext.SaveChanges();
+        }
     }
 
     private void ValidatePasswordRequirements(string password)
