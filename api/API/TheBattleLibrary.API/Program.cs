@@ -7,6 +7,7 @@ using Serilog;
 using System;
 using TheBattleLibrary.API.Middlewares;
 using TheBattleLibrary.Data;
+using TheBattleLibrary.Data.Entities;
 using TheBattleLibrary.Services;
 using TheBattleLibrary.Services.Abstractions;
 using TheBattleLibrary.Services.Security;

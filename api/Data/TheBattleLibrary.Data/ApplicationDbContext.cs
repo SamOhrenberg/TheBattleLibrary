@@ -8,6 +8,8 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<UserAccount> Users { get; set; }
     public DbSet<BattleList> BattleLists { get; set; }
     public DbSet<Selection> Selections { get; set; }
+    
+    public DbSet<UserToken> UserTokens { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
