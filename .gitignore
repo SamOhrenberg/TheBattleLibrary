@@ -28,3 +28,4 @@ appsettings.json
 *.db
 *.db-shm
 *.db-wal
+*.user
