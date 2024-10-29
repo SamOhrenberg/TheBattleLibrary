@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using TheBattleLibrary.Data;
 using TheBattleLibrary.Data.Entities;
 using TheBattleLibrary.Services.Abstractions;
 using TheBattleLibrary.Services.Errors;
@@ -80,10 +79,53 @@ public class UserAuthenticationService : IUserAuthenticationService
 
 
         // get a JWT now
-        return _tokenGenerator.GenerateToken(userAccount.Id, userAccount.Username);
-
+        var tokenResponse = _tokenGenerator.GenerateToken(userAccount.Id, userAccount.Username);
+        
+        // store the token with its expiration date
+        _dbContext.UserTokens.Add(new UserToken
+        {
+            ExpiresAt = tokenResponse.ExpiresAt,
+            Token = tokenResponse.Token
+        });
+        _dbContext.SaveChanges();
+        
+        return tokenResponse.Token;
     }
 
+    public async Task LogoutAsync(string token)
+    {
+        var tokenDb = await _dbContext.UserTokens.FirstOrDefaultAsync(a => a.Token == token);
+        if (tokenDb is not null)
+        {
+            tokenDb.IsRevoked = true;
+            _dbContext.SaveChanges();
+        }
+    }
+
+    public async Task<bool> CheckToken(string token)
+    {
+        var tokenDb = await _dbContext.UserTokens.FirstOrDefaultAsync(a => a.Token == token);
+        if (tokenDb is null)
+        {
+            _logger.LogDebug("Token is not in the database");
+            return false;
+        }
+
+        if (tokenDb.IsRevoked)
+        {
+            _logger.LogDebug("Token is revoked");
+            return false;
+        }
+        
+        if (tokenDb.ExpiresAt < DateTime.UtcNow)
+        {
+            _logger.LogDebug("Token is expired");
+            return false;
+        }
+
+        return true;
+    }
+    
     private void ValidatePasswordRequirements(string password)
     {
         InvalidPasswordException? invalidPasswordException = null;

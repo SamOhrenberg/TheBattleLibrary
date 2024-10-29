@@ -69,4 +69,21 @@ public class AuthController : ControllerBase
             });
         }
     }
+    
+    [HttpPost("logout")]
+    public async Task<ActionResult> LogoutAsync()
+    {
+        var token = Request.Headers["Authorization"];
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            return BadRequest(new Error
+            {
+                Code = "NoTokenProvided",
+                Message = "No token provided"
+            });
+        }
+
+        await _userAuthenticationService.LogoutAsync(token!);
+        return Ok();
+    }
 }

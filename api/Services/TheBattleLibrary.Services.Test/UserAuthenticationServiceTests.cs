@@ -150,6 +150,45 @@ namespace TheBattleLibrary.Services.Test
 
             // Assert
             Assert.True(!string.IsNullOrEmpty(result));
+            Assert.Single(_dbContext.UserTokens.ToList());
+        }
+        
+        
+        [Fact]
+        public async Task LogoutAsyncRevokesToken()
+        {
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: "LogoutAsyncRevokesToken")
+                .Options;
+
+            using (var context = new ApplicationDbContext(options))
+            {
+                var token = new UserToken { Token = "validtoken", ExpiresAt = DateTime.UtcNow.AddHours(1) };
+                context.UserTokens.Add(token);
+                context.SaveChanges();
+                
+                var inMemorySettings = new Dictionary<string, string?> {
+                    {"Security:Key", "Test123467890qwertyuioop[]asdfghjkl;'zxcvbnm,./"},
+                    {"Security:Issuer", "https://tests"},
+                    {"Security:Audience", "https://tests"},
+                    //...populate as needed for the test
+                };
+
+                IConfiguration configuration = new ConfigurationBuilder()
+                    .AddInMemoryCollection(inMemorySettings)
+                    .Build();
+
+
+                var loggerUasMock = new Mock<ILogger<UserAuthenticationService>>();
+                var loggerTokenGeneratorMock = new Mock<ILogger<TokenGenerator>>();
+                var tokenGeneratorMock = new Mock<TokenGenerator>(loggerTokenGeneratorMock.Object, configuration);
+                var service = new UserAuthenticationService(context, loggerUasMock.Object, tokenGeneratorMock.Object);
+
+                await service.LogoutAsync("validtoken");
+
+                var revokedToken = context.UserTokens.Single(t => t.Token == "validtoken");
+                Assert.True(revokedToken.IsRevoked);
+            }
         }
     }
 }
