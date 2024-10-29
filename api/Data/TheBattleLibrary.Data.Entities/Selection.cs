@@ -14,5 +14,5 @@ public class Selection
     public Guid? ParentSelectionId { get; set; } 
     public Selection? ParentSelection { get; set; } 
     
-    public required ICollection<Selection> ChildSelections { get; init; } = new List<Selection>();
+    public ICollection<Selection> ChildSelections { get; init; } = new List<Selection>();
 }
