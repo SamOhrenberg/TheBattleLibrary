@@ -1,12 +1,9 @@
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
-using System;
 using TheBattleLibrary.API.Middlewares;
-using TheBattleLibrary.Data;
 using TheBattleLibrary.Data.Entities;
 using TheBattleLibrary.Services;
 using TheBattleLibrary.Services.Abstractions;
@@ -14,7 +11,7 @@ using TheBattleLibrary.Services.Security;
 
 namespace TheBattleLibrary.API
 {
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {
@@ -59,7 +56,7 @@ namespace TheBattleLibrary.API
                     {
                         var config = JwtConfiguration.GetConfiguration(builder.Configuration);
 
-                        x.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                        x.TokenValidationParameters = new TokenValidationParameters
                         {
                             IssuerSigningKey = new SymmetricSecurityKey(config.Key),
                             ValidIssuer = config.Issuer,
@@ -98,6 +95,7 @@ namespace TheBattleLibrary.API
 
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseMiddleware<TokenRevocationMiddleware>();
             app.UseCors();
 
             app.UseHttpsRedirection();

@@ -8,6 +8,8 @@ namespace TheBattleLibrary.Services.Abstractions
         Task<string> AttemptLoginAsync(string username, string password);
 
         Task LogoutAsync(string token);
+        
+        Task<bool> CheckToken(string token);
 
     }
 }
