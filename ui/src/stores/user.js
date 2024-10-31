@@ -10,7 +10,7 @@ export const useUserStore = defineStore('user', () => {
 
   // Getters
   const isLoggedIn = computed(() => {
-    return token && token.value
+    return token.value;
   });
 
   // Actions
@@ -37,12 +37,12 @@ export const useUserStore = defineStore('user', () => {
       var loginResponse = await axios.post(`${proxy.$config.API_URL}/auth/login`, {
         username: username,
         password: password,
-      });  
+      });
       setToken(loginResponse.data);
       setUser({
         username: username.toUpperCase()
       });
-    } 
+    }
     catch ({response}) {
       throw response.code;
     }
@@ -58,7 +58,7 @@ export const useUserStore = defineStore('user', () => {
     await axios.post(`${proxy.$config.API_URL}/auth/register`, {
       username: username,
       password: password,
-    });    
+    });
   }
 
   async function fetchUser() {
