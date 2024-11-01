@@ -6,14 +6,26 @@ export const useListStore = defineStore('list', () => {
 
   const lists = ref([]);
   const newList = () => {
-    lists.value.push({
+    console.log('creating a new list');
+    const newListItem = {
       id: newGuid(),
-      name: ''
-    })
+      name: '',
+      faction: '',
+      selections: []
+    };
+    lists.value.push(newListItem);
+    return newListItem;
+  };
+
+  const saveList = (list) => {
+    console.log('saving list');
+    const listIndex = lists.value.findIndex(l => l.id === list.id);
+    lists.value[listIndex] = list;
   };
 
   return {
     lists,
-    newList
+    newList,
+    saveList
   };
 });
