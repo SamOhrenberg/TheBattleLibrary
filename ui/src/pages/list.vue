@@ -67,10 +67,8 @@ let listItem = reactive(lists.value.find(item => item.id === listId) || listStor
 console.log(listItem);
 
 const valid = computed(() => {
-  return listItem !== undefined
-    && listItem !== null
-    && listItem.name !== null
-    && listItem.name !== undefined;
+  return listItem.name !== ''
+    && listItem.faction !== '';
 });
 
 const saveButtonClick = () => {

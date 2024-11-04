@@ -7,7 +7,9 @@
         <DesktopNav  />
       </div>
 
-      <router-view />
+      <div class="pa-2">
+        <router-view />
+      </div>
 
       <!-- Render this component only on small screens (phones) -->
       <div v-if="xs">
