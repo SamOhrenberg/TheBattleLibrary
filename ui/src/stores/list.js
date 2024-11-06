@@ -5,6 +5,21 @@ import {newGuid} from "@/utilities/guid";
 export const useListStore = defineStore('list', () => {
 
   const lists = ref([]);
+
+  // Load lists from localStorage
+  const loadLists = () => {
+    const storedLists = localStorage.getItem('lists');
+    if (storedLists) {
+      lists.value = JSON.parse(storedLists);
+    }
+  };
+
+  // Save lists to localStorage
+  const saveListsToLocalStorage = () => {
+    localStorage.setItem('lists', JSON.stringify(lists.value));
+  };
+
+
   const newList = () => {
     console.log('creating a new list');
     return {
@@ -36,6 +51,8 @@ export const useListStore = defineStore('list', () => {
       list.id = newGuid();
       lists.value.push(list);
     }
+    saveListsToLocalStorage();
+
   };
 
   const deleteList = (id) => {
@@ -44,7 +61,10 @@ export const useListStore = defineStore('list', () => {
     if (listIndex > -1) {
       lists.value.splice(listIndex,1);
     }
+    saveListsToLocalStorage();
   }
+
+  loadLists();
 
   return {
     lists,

@@ -25,28 +25,39 @@
       >
         Looks like you don't have any lists yet. Go ahead and create one!
       </p>
-      <v-list
-        v-if="hasLists"
-      >
-        <v-list-item
-          v-for="item in lists"
-          :key="item.id"
+      <v-row>
+        <v-col
+          cols="12"
+          lg="6"
         >
-          <v-list-item-title>
-            <v-btn
-              variant="text"
-              @click="navigateToList(item.id)"
+          <v-list
+            v-if="hasLists"
+          >
+            <v-list-item
+              v-for="item in lists"
+              :key="item.id"
             >
-              {{ item.name }}
-            </v-btn>
-            <v-btn
-              icon="mdi-delete"
-              variant="text"
-              @click="beginDeleteList(item.id)"
-            />
-          </v-list-item-title>
-        </v-list-item>
-      </v-list>
+              <v-list-item-title
+                class="d-flex justify-center align-center"
+              >
+                <v-btn
+                  variant="text"
+                  class="me-auto"
+                  @click="navigateToList(item.id)"
+                >
+                  {{ item.name }}
+                </v-btn>
+                <v-btn
+                  icon="mdi-delete"
+                  variant="text"
+                  @click="beginDeleteList(item.id)"
+                />
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+
+        </v-col>
+      </v-row>
     </div>
   </div>
 </template>

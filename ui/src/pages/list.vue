@@ -1,10 +1,13 @@
 <template>
   <v-form v-model="valid">
     <v-container>
+      <h1>Battle List</h1>
+      <p>Fill out the following form with your faction information and selections.</p>
+      <hr class="my-5"/>
       <v-row>
         <v-col
           cols="12"
-          md="4"
+          lg="8"
         >
           <v-text-field
             v-model="listItem.name"
@@ -16,7 +19,7 @@
       <v-row>
         <v-col
           cols="12"
-          md="4"
+          lg="8"
         >
           <v-text-field
             v-model="listItem.faction"
@@ -29,7 +32,7 @@
       <v-row>
         <v-col
           cols="12"
-          md="4"
+          lg="8"
         >
           <v-btn
             :disabled="!valid"
@@ -47,27 +50,62 @@
       </v-row>
 
       <!-- Form to add a new selection -->
+      <hr class="my-5"/>
+      <h2>Add Selections</h2>
       <v-row>
         <v-col
           cols="12"
-          md="4"
+          lg="8"
         >
-          <v-text-field v-model="newSelection.name" label="Selection Name" />
-          <v-text-field v-model="newSelection.type" label="Selection Type" />
-          <v-text-field v-model="newSelection.quantity" label="Quantity" type="number" />
-          <v-btn @click="addSelection">Add Selection</v-btn>
+          <v-row>
+            <v-col
+              cols="4"
+            >
+              <v-text-field v-model="newSelection.name" label="Selection Name"/>
+            </v-col>
+            <v-col
+              cols="4"
+            >
+              <v-autocomplete
+                v-model="newSelection.type"
+                label="Selection Type"
+                :items="['Unit', 'Operative']"
+              />
+            </v-col>
+            <v-col
+              cols="2"
+            >
+              <v-text-field
+                v-model="newSelection.quantity"
+                label="Quantity"
+                type="number"
+              />
+            </v-col>
+            <v-col
+              cols="2">
+              <v-btn
+                icon="mdi-plus"
+                variant="tonal"
+                :disabled="newSelection.name === '' || newSelection.type === ''"
+                @click="addSelection"
+              />
+            </v-col>
+          </v-row>
         </v-col>
       </v-row>
 
       <!-- Display the list of selections -->
-      <v-row>
-        <v-col cols="12" md="4">
+      <v-row v-if="listItem.selections.length > 0">
+        <v-col cols="12" lg="8">
           <h3>Selections</h3>
-          <v-list>
-            <v-list-item v-for="selection in listItem.selections" :key="selection.id">
-              <v-list-item-title>{{ selection.name }} ({{ selection.type }}) - {{ selection.quantity }}</v-list-item-title>
-            </v-list-item>
-          </v-list>
+          <div v-for="(selections, type) in groupedSelections" :key="type">
+            <h4>{{ type }}s</h4>
+            <ListSelection
+              v-for="selection in selections"
+              :key="selection.id"
+              :selection="selection"
+            />
+          </div>
         </v-col>
       </v-row>
     </v-container>
@@ -80,6 +118,7 @@ import { useListStore } from '@/stores/list';
 import { reactive, computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import {newGuid} from "@/utilities/guid";
+import ListSelection from "@/components/ListSelection.vue";
 
 const router = useRouter();
 const route = useRoute();
@@ -123,6 +162,17 @@ const saveButtonClick = () => {
 const cancelButtonClick = () => {
   router.push('/lists');
 }
+
+// Group selections by type
+const groupedSelections = computed(() => {
+  return listItem.selections.reduce((groups, selection) => {
+    if (!groups[selection.type]) {
+      groups[selection.type] = [];
+    }
+    groups[selection.type].push(selection);
+    return groups;
+  }, {});
+});
 
 </script>
 
