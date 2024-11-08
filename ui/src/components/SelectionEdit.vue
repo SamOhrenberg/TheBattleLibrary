@@ -21,6 +21,10 @@ const newSelection = ref({ ...props.selection });
 
 const emit = defineEmits(['selection-created']);
 
+watch(() => props.selection, (newVal) => {
+  newSelection.value = { ...newVal };
+}, { deep: true });
+
 const saveAndCloseDialog = () => {
   if (!newSelection.value.id) {
     newSelection.value.id = newGuid();
