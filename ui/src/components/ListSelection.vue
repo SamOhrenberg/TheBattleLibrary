@@ -1,6 +1,7 @@
 <script setup>
 import {computed, defineProps} from 'vue';
 import {newGuid} from "@/utilities/guid";
+import SelectionEdit from "@/components/SelectionEdit.vue";
 
 const newSubSelection = reactive({
   id: '',
@@ -33,6 +34,10 @@ const groupedSelections = computed(() => {
   }, {});
 });
 
+const handleSelectionCreated = (newSelection) => {
+  props.selection.name = newSelection.name;
+}
+
 const createNewSubSelection= () => {
   newSubSelection.id = newGuid();
 }
@@ -40,7 +45,10 @@ const createNewSubSelection= () => {
 
 <template>
   <div>
-    <p>{{ selection.quantity }}x {{ selection.name }}</p>
+    <p>
+      {{ selection.quantity }}x {{ selection.name }}
+      <SelectionEdit :selection="selection" @selection-created="handleSelectionCreated"  />
+    </p>
     <v-row v-if="selection.selections.length > 0">
       <v-col cols="12" lg="8">
         <h3>Selections</h3>
@@ -52,25 +60,6 @@ const createNewSubSelection= () => {
             :selection="selection"
           />
         </div>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col
-        cols="12"
-        v-if="newSubSelection.id === ''"
-      >
-        <v-btn
-          icon="mdi-plus"
-          variant="tonal"
-          size="small"
-          @click="createNewSubSelection"
-        />
-      </v-col>
-      <v-col
-        cols="11"
-        v-if="newSubSelection.id !== ''"
-      >
-        Hello World
       </v-col>
     </v-row>
 

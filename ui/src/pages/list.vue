@@ -29,6 +29,29 @@
       </v-row>
 
 
+      <!-- Display the list of selections -->
+      <v-row>
+        <v-col cols="12" lg="8">
+          <v-row>
+            <v-col cols="6" >
+              <h2>Selections</h2>
+            </v-col>
+            <v-col>
+              <SelectionEdit @selection-created="handleSelectionCreated" />
+            </v-col>
+          </v-row>
+          <div v-for="(selections, type) in groupedSelections" :key="type">
+            <h3>{{ type }}s</h3>
+            <ListSelection
+              v-for="selection in selections"
+              :key="selection.id"
+              :selection="selection"
+            />
+          </div>
+        </v-col>
+      </v-row>
+
+
       <v-row>
         <v-col
           cols="12"
@@ -48,66 +71,6 @@
           </v-btn>
         </v-col>
       </v-row>
-
-      <!-- Form to add a new selection -->
-      <hr class="my-5"/>
-      <h2>Add Selections</h2>
-      <v-row>
-        <v-col
-          cols="12"
-          lg="8"
-        >
-          <v-row>
-            <v-col
-              cols="4"
-            >
-              <v-text-field v-model="newSelection.name" label="Selection Name"/>
-            </v-col>
-            <v-col
-              cols="4"
-            >
-              <v-autocomplete
-                v-model="newSelection.type"
-                label="Selection Type"
-                :items="['Unit', 'Operative']"
-              />
-            </v-col>
-            <v-col
-              cols="2"
-            >
-              <v-text-field
-                v-model="newSelection.quantity"
-                label="Quantity"
-                type="number"
-              />
-            </v-col>
-            <v-col
-              cols="2">
-              <v-btn
-                icon="mdi-plus"
-                variant="tonal"
-                :disabled="newSelection.name === '' || newSelection.type === ''"
-                @click="addSelection"
-              />
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
-
-      <!-- Display the list of selections -->
-      <v-row v-if="listItem.selections.length > 0">
-        <v-col cols="12" lg="8">
-          <h3>Selections</h3>
-          <div v-for="(selections, type) in groupedSelections" :key="type">
-            <h4>{{ type }}s</h4>
-            <ListSelection
-              v-for="selection in selections"
-              :key="selection.id"
-              :selection="selection"
-            />
-          </div>
-        </v-col>
-      </v-row>
     </v-container>
   </v-form>
 </template>
@@ -119,6 +82,7 @@ import { reactive, computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import {newGuid} from "@/utilities/guid";
 import ListSelection from "@/components/ListSelection.vue";
+import SelectionEdit from "@/components/SelectionEdit.vue";
 
 const router = useRouter();
 const route = useRoute();
@@ -143,6 +107,21 @@ const newSelection = reactive({
   quantity: 1,
   selections: []
 });
+
+const handleSelectionCreated = (newSelection) => {
+
+  const existingSelection = listItem.selections.find(selection =>
+    selection.name === newSelection.name &&
+    selection.type === newSelection.type
+  );
+
+  if (existingSelection) {
+    existingSelection.quantity = Number(existingSelection.quantity) + Number(newSelection.quantity);
+  } else {
+    listItem.selections.push(newSelection);
+  }
+
+};
 
 const addSelection = () => {
   newSelection.id = newGuid();

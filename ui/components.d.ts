@@ -12,5 +12,6 @@ declare module 'vue' {
     ListSelection: typeof import('./src/components/ListSelection.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SelectionEdit: typeof import('./src/components/SelectionEdit.vue')['default']
   }
 }
